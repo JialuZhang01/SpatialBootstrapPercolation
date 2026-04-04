@@ -118,7 +118,7 @@ def Local_Percolation(G,i, avg_k, zeta,source_i,T_active,sim_t, max_steps,result
 
 def BP_deal_pfinal(sim_r,G, i, avg_k,zeta,T_active,sim_t,max_steps,selected_sets_l,dic_status_random,L_nodes): 
     """
-    Executes a local percolation simulation and computes the final active fraction (p_infinity).
+    Executes a local percolation simulation and computes the final p_infinity.
     
    
     Parameters:
@@ -133,7 +133,7 @@ def BP_deal_pfinal(sim_r,G, i, avg_k,zeta,T_active,sim_t,max_steps,selected_sets
         L_nodes (list): List of all nodes.
 
     Returns:
-        float: The final fraction of active nodes (p_infinity) at the steady state.
+        float: The LCC at the steady state.
     """
     resultpath = 'result/'  
     print('Local_Percolation for avg_k:%f, source_r:%d' % (avg_k, sim_r)) 
