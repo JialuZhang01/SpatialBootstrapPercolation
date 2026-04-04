@@ -113,7 +113,7 @@ if __name__ == "__main__":
     source_p = 0.229  # zeta_pc2
    
     path_read_pinf = 'deal_result/'+ f'NetID{i}_avgk{avg_k}_zeta{zeta}'+'/'+f'source{source_p}_T{T_active}'+ '/time_result/'
-    path_write_pinf = 'deal_result_rg变化/T='+str(T_active)+'/zeta='+str(zeta)+'/'
+    path_write_pinf = 'deal_result_rg/T='+str(T_active)+'/zeta='+str(zeta)+'/'
     mkdirectory(path_write_pinf) 
     
     dic_t_active = {} 
