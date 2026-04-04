@@ -12,7 +12,6 @@ fig, axs = plt.subplots(
 plt.subplots_adjust(
     wspace=-1,  
     hspace=0  
-   
 )
 
 zetas=[3,12,1000]  # The list of zeta values
@@ -24,9 +23,7 @@ T_active = 6  # The activation threshold (T)
 
 c_draw =['#77AE43','#1072BD','#EDB021','#D7592C','#7F318D']
 list_label =['$p_c^{(2)}$','$p_c^{(2)}+0.0005$','$p_c^{(2)}+0.001$','$p_c^{(2)}+0.005$']     
-    
 
-# ========== 2. 循环填充每个子图（示例：第i行、第j列） ==========
 for i0 in range(3):  
     for j0 in range(3): 
         ax = axs[i0, j0] 
