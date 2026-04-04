@@ -330,15 +330,15 @@ if __name__ == "__main__":
     color_list = ['#1072BD', '#77AE43', '#D7592C']
     
     # Read the file
-    deal_resultfile1 = f'T={T_active}_avgk={avg_k}_max_connexted.txt' 
+    deal_resultfile1 = f'deal_result/T={T_active}_avgk={avg_k}_max_connexted.txt' 
     dic_zeta_pmax = extract_info(zetas, deal_resultfile1, source_pro1, source_pro2)
-    deal_resultfile2 = f'T={T_active}_avgk={avg_k}_second_connexted.txt'
+    deal_resultfile2 = f'deal_result/T={T_active}_avgk={avg_k}_second_connexted.txt'
     dic_zeta_psecond = extract_info1(zetas1, deal_resultfile2, source_pro1, source_pro2)
-    deal_resultfile3 = f'T={T_active}_avgk={avg_k}_NOI.txt'
+    deal_resultfile3 = f'deal_result/T={T_active}_avgk={avg_k}_NOI.txt'
     dic_zeta_pNOI = extract_info1(zetas1, deal_resultfile3, source_pro1, source_pro2)
-    deal_resultfile0_3 =  f'T={T_active}_avgk={avg_k}_max_connexted3_inactive.txt' 
-    deal_resultfile0_4 =  f'T={T_active}_avgk={avg_k}_max_connexted4_inactive.txt' 
-    deal_resultfile0_5 =  f'T={T_active}_avgk={avg_k}_max_connexted5_inactive.txt' 
+    deal_resultfile0_3 =  f'deal_result/T={T_active}_avgk={avg_k}_max_connexted3_inactive.txt' 
+    deal_resultfile0_4 =  f'deal_result/T={T_active}_avgk={avg_k}_max_connexted4_inactive.txt' 
+    deal_resultfile0_5 =  f'deal_result/T={T_active}_avgk={avg_k}_max_connexted5_inactive.txt' 
     dic_zeta_psecond2 = extract_info2(zetas, deal_resultfile0_3,deal_resultfile0_4,deal_resultfile0_5,source_pro1)
 
     draw_total(dic_zeta_pmax, dic_zeta_psecond, dic_zeta_pNOI,dic_zeta_psecond2, color_list, T_active, avg_k)
