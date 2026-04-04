@@ -117,52 +117,62 @@ def Percolation(G,i, avg_k, zeta,source_i,T_active,sim_t, max_steps,networkpath,
 
 
 def deal_results(i, zeta, avg_k,sim_r,T_active,sim_t):
-    resultpath = 'result/'  # 存放模拟结果的文件夹
-    deal_resultpath = 'deal_result/time_result/zeta='+str(zeta)+'/sim_time='+str(sim_t)+'/'  # 存放处理结果的文件夹
-    deal_results_time =  deal_resultpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}'+'/'+f'source_r{sim_r}_T{T_active}'+ '/time_result/' # 存放时间上处理结果的路径
-    resultpath_status = resultpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}'+'/'+f'source_r{sim_r}_T{T_active}'+ '/'  # 存放结果的路径
-    mkdirectory(deal_results_time)  # 创建存放时间上处理结果的文件夹
+    """
+    Parses raw simulation logs to extract spatio-temporal activation data.
+
+    Parameters:
+        i (int): Network ID.
+        zeta (int): Characteristic link length (spatial parameter).
+        avg_k (int): Average degree of the network.
+        sim_r (int): Radius.
+        T_active (int): Activation threshold used in simulations.
+        sim_t (int): Number of realizations.
+
+    """
+    resultpath = 'result/'  
+    deal_resultpath = 'deal_result/time_result/zeta='+str(zeta)+'/sim_time='+str(sim_t)+'/' 
+    deal_results_time =  deal_resultpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}'+'/'+f'source_r{sim_r}_T{T_active}'+ '/time_result/' 
+    resultpath_status = resultpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}'+'/'+f'source_r{sim_r}_T{T_active}'+ '/' 
+    mkdirectory(deal_results_time)  
     
     print('Deal_R for <k>:%f, source_r:%d' % (avg_k, sim_r)) 
-    # f1记录对于该次模拟 此次模拟的active总数 0;节点1;节点2;...(0时步激活的节点) 1;节点1;节点2;...(1时步激活的节点) ...
     f1 = open(deal_results_time +'active_result.txt','w', encoding='utf-8-sig') 
-    # f2记录对于该次模拟 节点1 节点2 ...(只写active节点)
     f2 = open(deal_results_time +'active_result_total.txt','w', encoding='utf-8-sig')
     
-    f1.write(str(sim_t) + '\t')  # 写入模拟次数
-    f2.write(str(sim_t) + '\t')  # 写入模拟次数
-    sum1 = 0  # 用于记录每次模拟的active总数
-    dic_1 = {}   # 记录每次模拟每时步新增的active节点 key为时步,value为该时步inactive → active的节点坐标的列表
+    f1.write(str(sim_t) + '\t')  
+    f2.write(str(sim_t) + '\t')  
+    sum1 = 0  
+    dic_1 = {}   
     f = open(resultpath_status +'sim'+str(sim_t) + '_status.txt', 'r', encoding='utf-8-sig') 
-    for line in f:   # 遍历每一个节点
+    for line in f: 
         line = line.strip().split('\t')
-        if line[1] == 'active':   # 如果节点的状态为active
-            sum1 += 1  # 此次模拟的active总数+1
-            if int(line[2]) not in dic_1:   # 若该时步没有节点inactive → active
-                dic_1[int(line[2])] = []     # 初始化该时步inactive → active的节点坐标的列表为空
-            dic_1[int(line[2])].append(line[0])   # 把inactive → active的节点坐标加入对应时步
-    f1.write(str(sum1) + '\t')   # 写入此次模拟的active总数
-    sorted_dic = dict(sorted(dic_1.items()))  # 对dic_1按时步从小到大排序
-    sorted_dic1 = {}  # sorted_dic 中列表里的字符串形式的元组转换为实际的元组形式
+        if line[1] == 'active': 
+            sum1 += 1  
+            if int(line[2]) not in dic_1:   
+                dic_1[int(line[2])] = []    
+            dic_1[int(line[2])].append(line[0])   
+    f1.write(str(sum1) + '\t')   
+    sorted_dic = dict(sorted(dic_1.items()))  
+    sorted_dic1 = {}  
     for key, value in sorted_dic.items():
         new_list = []
         for item in value:
-            item = item.strip('()') # 去除字符串的括号
-            num1, num2 = map(int, item.split(',')) # 分割字符串并转换为整数
+            item = item.strip('()') 
+            num1, num2 = map(int, item.split(','))
             new_list.append((num1, num2))
         sorted_dic1[key] = new_list
    
-    if len(sorted_dic1) != 0: # 如果此次模拟有active节点（初始p=0时最终没有active的）
-        max_step = max(sorted_dic1.keys())  # 返回此次模拟最大的时步
+    if len(sorted_dic1) != 0: 
+        max_step = max(sorted_dic1.keys())  
     else:
         max_step = 0
-    x_step =  np.arange(max_step+1) # 横轴：时步
-    y_accumulate = [0  for a in range(max_step+1)]   # 记录当前时步累计的active节点数
+    x_step =  np.arange(max_step+1) 
+    y_accumulate = [0  for a in range(max_step+1)]   
     
-    for step in sorted_dic1:  # 对每一时步
+    for step in sorted_dic1: 
         f1.write(str(step) + ';')
-        y_accumulate[step] += len(sorted_dic1[step])  # 加上当前时步新增的
-        for z in range(len(sorted_dic1[step])):  # 对该时步下的inactive → active的节点列表
+        y_accumulate[step] += len(sorted_dic1[step])  
+        for z in range(len(sorted_dic1[step])):  
             f2.write(str(sorted_dic1[step][z]) +'\t')
             if z != len(sorted_dic1[step]) - 1:
                 f1.write(str(sorted_dic1[step][z]) +';')
@@ -171,37 +181,51 @@ def deal_results(i, zeta, avg_k,sim_r,T_active,sim_t):
     f1.write('\n')
     f2.write('\n')
     f.close()
-    for active_new in range(1,len(y_accumulate)):  # 转成累计数
+    for active_new in range(1,len(y_accumulate)):
         y_accumulate[active_new] += y_accumulate[active_new-1] 
    
     f2.close()
             
     
-# Network ID, zeta,<k>,r,阈值,某次模拟次数
-def find_pfinal(i, zeta, avg_k,sim_r,T_active,sim_t):  # 计算序参量
-    deal_resultpath = 'deal_result/time_result/zeta='+str(zeta)+'/sim_time='+str(sim_t)+'/'# 存放处理结果的文件夹
-    networkpath = 'network/'   # 网络文件夹 
+
+def find_pfinal(i, zeta, avg_k,sim_r,T_active,sim_t): 
+    """
+    Computes the size of the Giant Connected Component (GCC).
+
+    Parameters:
+        i (int): Network ID.
+        zeta (int): Characteristic link length (spatial parameter).
+        avg_k (int): Average degree of the network.
+        sim_r (int): Radius.
+        T_active (int): Activation threshold used in simulations.
+        sim_t (int): Number of realizations.
+       
+    Returns:
+        float: The normalized size of the largest connected component (P_infinity).
+    """
+    deal_resultpath = 'deal_result/time_result/zeta='+str(zeta)+'/sim_time='+str(sim_t)+'/'
+    networkpath = 'network/'  
     with open(networkpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}_spatialNet.pkl', 'rb') as f:
-        G_initial = pk.load(f)  # 使用 pickle.load 方法从文件中反序列化对象
-    dic_r_pfinal = {}  #存放该r对应的该次模拟结果的最终最大连通量的节点的比例  key: r,value:[该次模拟结果的p∞]
+        G_initial = pk.load(f)  
+    dic_r_pfinal = {} 
     print('z='+str(zeta)+', r:'+str(sim_r))
     dic_r_pfinal[sim_r]=[]
-    # f记录对于该次模拟 节点1 节点2 ...(只写active节点)
+ 
     f = open(deal_resultpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}'+'/'+f'source_r{sim_r}_T{T_active}'+ '/time_result/active_result_total.txt','r',encoding ='utf-8-sig') 
     for line in f:
-        G = copy.deepcopy(G_initial)  # 初始的网络
-        list_active =[]   # 存放此次模拟的active节点
+        G = copy.deepcopy(G_initial)
+        list_active =[]   
         line = line.strip().split('\t')
         for j in line[1:]:
             list_active.append(j)
         l_active = [ast.literal_eval(item) for item in list_active]
         G1 = nx.subgraph(G, l_active)
-        components = list(nx.connected_components(G1))  # 计算剩余网络的连通量
+        components = list(nx.connected_components(G1))  
         if len(components) == 0 :
             dic_r_pfinal[sim_r].append(0)
             p_final = 0
         else:
-            largest_component = max(components, key=len)  # 计算剩余网络的最大连通量
+            largest_component = max(components, key=len)  
             p_final = int(len(largest_component))/N
             dic_r_pfinal[sim_r].append(p_final)
     f.close()
@@ -220,48 +244,81 @@ def find_pfinal(i, zeta, avg_k,sim_r,T_active,sim_t):  # 计算序参量
     return p_final
     
  
-# 半径大小,该<k>对应的原始网络,存网络的文件夹,Network ID,zeta,<k>,阈值,某次模拟次数,最大迭代次数,每次模拟每个r下对应的种子节点,网络的节点列表   
-def BP_deal_pfinal(sim_r,G,networkpath, i, zeta, avg_k,T_active,sim_t,max_steps,Selected_sets,L_nodes): # 该r下该次模拟得到的p∞
-    resultpath = 'result/'  # 存放模拟结果的文件夹
+def BP_deal_pfinal(sim_r,G,networkpath, i, zeta, avg_k,T_active,sim_t,max_steps,Selected_sets,L_nodes): 
+    """
+    Executes a percolation simulation and computes the final p_infinity.
+    
+    Parameters:
+        sim_radius (int): The radius parameter for the initial seed set.
+        G (networkx.Graph): Underlying spatial network.
+        networkpath: Network Directory
+        i, avg_k, zeta: Network parameters (index, average degree, link length).
+        T_active (int): Activation threshold (T).
+        sim_t (int): Current realization index.
+        max_steps (int): Maximum time steps for each cascade.
+        selected_Sets (list): Pre-generated initial seed nodes for all simulations.
+        L_nodes (list): List of all nodes.
+
+    Returns:
+        float: The LCC at the steady state.
+    """
+    resultpath = 'result/'  
     print('Percolation for avg_k:%f, source_r:%d' % (avg_k, sim_r)) 
-    resultpath_status = resultpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}'+'/'+f'source_r{sim_r}_T{T_active}'+ '/'  # 存放结果的路径
-    source_i = radius_list.index(sim_r)  # 该r对应在 存取所有初始选取半径的列表中的索引
-    mkdirectory(resultpath_status)  # 创建存放结果的文件夹
-    Percolation(G,i, avg_k, zeta,source_i,T_active,sim_t, max_steps,networkpath,resultpath_status,Selected_sets,L_nodes)  # bootstrap渗流
-    deal_results(i, zeta, avg_k,sim_r,T_active,sim_t)  # 处理结果
-    p_infin = find_pfinal(i, zeta, avg_k,sim_r,T_active,sim_t)  # 计算序参量
+    resultpath_status = resultpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}'+'/'+f'source_r{sim_r}_T{T_active}'+ '/'
+    source_i = radius_list.index(sim_r)  # 
+    mkdirectory(resultpath_status)  
+    Percolation(G,i, avg_k, zeta,source_i,T_active,sim_t, max_steps,networkpath,resultpath_status,Selected_sets,L_nodes)  
+    deal_results(i, zeta, avg_k,sim_r,T_active,sim_t) 
+    p_infin = find_pfinal(i, zeta, avg_k,sim_r,T_active,sim_t)  
     
     
     return p_infin
     
 
   
-# 初始选取的半径大小的列表,该<k>对应的原始网络,存网络的文件夹,Network ID,zeta,<k>,阈值,总模拟次数,最大迭代次数,每次模拟每个r下对应的种子节点,网络的节点列表
-def find_rc(radius_l,G,networkpath, i, zeta, avg_k,T_active,sim_time,max_steps,Selected_sets,L_nodes): # 找该<k>下sim_time次的rc
-    k_rc_l = []  # 记录该<k>下sim_time次的rc
-    for sim_t in range(sim_time):  # 遍历模拟次数
-        left, right = 0, len(radius_l) - 1   # 初始左边索引是0，右边索引是L/2 -1 =249
-        rc_index = -1  # 用于记录rc 在radius_l中的索引, 初始是-1
+
+def find_rc(radius_l,G,networkpath, i, zeta, avg_k,T_active,sim_time,max_steps,Selected_sets,L_nodes): 
+    """
+    Recording $R_c$ across "sim_time" independent realizations for a given $\langle k \rangle$
+    """
+    k_rc_l = []  
+    for sim_t in range(sim_time):  
+        left, right = 0, len(radius_l) - 1 
+        rc_index = -1  
     
-        while left <= right:  # 只要左边索引 ≤ 右边索引
-            mid = (left + right) // 2  # 每次循环要计算的r 在radius_l中的索引
-            # 传入该半径, 调用bootstrap渗流_处理结果_计算序参量
+        while left <= right:
+            mid = (left + right) // 2  
+            
             p_infinite = BP_deal_pfinal(radius_l[mid],G,networkpath, i, zeta, avg_k,T_active,sim_t,max_steps,Selected_sets,L_nodes)  
     
-            if p_infinite >= 0.9:  # 如果在该r下得到的序参量≥0.9
+            if p_infinite >= 0.9: 
                 rc_index = mid
-                right = mid - 1  # 继续在左半部分查找
-            else:   # 如果在该r下得到的序参量 < 0.9
-                left = mid + 1  # 继续在右半部分查找
+                right = mid - 1  
+            else:   
+                left = mid + 1 
                 
-        # 如果rc 在radius_l中的索引值不是-1,就说明找到了一个有限的rc;
-        # 如果rc 在radius_l中的索引值是-1,就返回rc= L/2 =250;
+       
         k_rc_l.append(radius_l[rc_index])
         
     return k_rc_l
    
 
 def points_in_circle(l_nodes, radius_list, l_size,sim_t):
+    """
+    Generates sets of initial active nodes within circular regions of varying radius.
+    
+    This function accounts for Periodic Boundary Conditions (PBC), ensuring that 
+    circles centered near the grid edges correctly wrap around to the opposite side.
+
+    Parameters:
+        L_nodes (list): List of all nodes.
+        radius_list (list): Sorted list of radii to generate seeds for.
+        l_size (int): # Lattice length
+        sim0 (int): Number of independent spatial samples.
+
+    Returns:
+        dict: {realization_id: [set_of_nodes_R1, set_of_nodes_R2, ...]}
+    """
     sim_selected = {}
     for sim_t1 in range(sim_t):
         index_n = random.randint(0,len(l_nodes)-1)
@@ -283,41 +340,38 @@ def points_in_circle(l_nodes, radius_list, l_size,sim_t):
 
        
 if __name__ == "__main__":
-    networkpath = 'network/'   # 网络文件夹
-    # 网络涉及到的参数
-    L = 500  # 每行/列的节点数目L
-    N = L * L  # 整个网络的总节点数N
-    T_active = 6  # 邻居中有>=2个处于active时,inactive → active
-    sim_time = 1  # 模拟次数
+    networkpath = 'network/'   #   Network Directory 
+  
+    L = 500  # Lattice length
+    N = L * L  # Number of nodes
+    T_active = 6  # The activation threshold (T)
+    sim_time = 10  # Number of independent simulation realizations
     
-    zeta = 5  # 本程序只对一个zeta,计算不同<k>下的rc
-    avg_k_list  = [a_k / 10 for a_k in range(100, 151)] # <k>列表：[10.0,15.0]
+    zeta = 5 
+    avg_k_list  = [a_k / 10 for a_k in range(100, 151)] #  List of <k>
     i = 0
-    max_r= 251  # 最大的局部挑选范围选为L/2=250
+    max_r= 251  # The largest range of local selection options
     
     path_write_rc = 'deal_result/avgk_rc/'
     mkdirectory(path_write_rc) 
-    f_write=open(path_write_rc+'zeta='+str(zeta)+'_k_rc.txt','a+',encoding='utf-8-sig') # f_write记录对于该zeta,每个<k>下的rc
+    f_write=open(path_write_rc+'zeta='+str(zeta)+'_k_rc.txt','a+',encoding='utf-8-sig')
     
-    for avg_k in avg_k_list:  # 遍历<k>
-        f_write.write('<k>'+str(avg_k)+'\t')  # f_write每一行先写入<k>*
+    for avg_k in avg_k_list: 
+        f_write.write('<k>'+str(avg_k)+'\t') 
         print('zeta='+str(zeta)+', avg_k:'+str(avg_k))
         with open(networkpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}_spatialNet.pkl', 'rb') as f:
-            G = pk.load(f)  # 使用 pickle.load 方法从文件中反序列化对象
-        L_nodes = []    # 网络的节点列表
-        for node in G.nodes():  # 对每一个节点,把节点加入节点列表 
+            G = pk.load(f)  
+        L_nodes = []    
+        for node in G.nodes():  
             L_nodes.append(node)  
         
-        radius_list = [r_initial for r_initial in range(max_r)]  # 初始选取的半径的大小，包含在该范围内的所有节点作为种子
-        
-        # Selected_sets:key为模拟次数,value该次模拟为[{r=0选的种子},{r=1选的种子},{r=2选的种子},...]
+        radius_list = [r_initial for r_initial in range(max_r)] 
+       
         Selected_sets = points_in_circle(L_nodes, radius_list, L,sim_time)
-        max_steps = 5000000   # 最大迭代次数
-        
-        # 找该<k>下sim_time次的rc, k_rc_list:[该<k>下第1次模拟的rc, 该<k>下第2次模拟的rc,...]
+        max_steps = 5000000 
         k_rc_list=find_rc(radius_list,G,networkpath, i, zeta, avg_k,T_active,sim_time,max_steps,Selected_sets,L_nodes)  
     
-        for rc in range(len(k_rc_list)):  # f_write每一行写入<k>* 后,写入每一次的rc
+        for rc in range(len(k_rc_list)):
             if rc!= len(k_rc_list)-1:
                 f_write.write(str(k_rc_list[rc])+ '\t')
             else:
