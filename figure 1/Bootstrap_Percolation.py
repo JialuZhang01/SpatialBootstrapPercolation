@@ -201,32 +201,35 @@ def Select_nodes(n,l_nodes,source_pro,sim_t):
     
        
 if __name__ == "__main__":
+    networkpath = 'network/'  
+    # Network Parameters
+    L = 1000   # Lattice length
+    N = L * L # Number of nodes
     
-    networkpath = 'network/'   # 网络文件夹
-    # 网络涉及到的参数
-    L = 1000  # 每行/列的节点数目L
-    N = L * L  # 整个网络的总节点数N
-    # zeta取值的列表:[3,4,5,...19,20,30,40,50,...,90,100,500,1000]
-    zeta = 8
-    avg_k = 10   # 设置平均度
+    zetas = list(np.arange(3, 21)) + [30, 40,50, 60, 70, 80, 90, 100, 500, 1000]    # Range of zeta values
+    avg_k = 10   # Average Degree
     i = 0
-    with open(networkpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}_spatialNet.pkl', 'rb') as f:
-        G = pk.load(f)  # 使用 pickle.load 方法从文件中反序列化对象
-    L_nodes = []    # 网络的节点列表
-    for node in G.nodes():  # 对每一个节点，初始化状态为---'inactive',-1
-        L_nodes.append(node)   # 把节点加入节点列表 
-    
-    
-    source_pro = [x / 1000 for x in range(85, 300)] # 初始激活节点的比例:[0.01, 0.02, 0.03, 0.04,... 0.98,0.99,1.0]
-    
-    T_active = 6  # 邻居中有>=2个处于active时,inactive → active
-    sim_time = 10  # 模拟次数
-    Selected_sets = Select_nodes(N,L_nodes,source_pro,sim_time)
-    max_steps = 5000000   # 最大迭代次数
-    BPParallel(G,networkpath, i, zeta, avg_k,source_pro,T_active,sim_time,max_steps,Selected_sets,L_nodes)   # 并行模拟
-    
-    
-    
+    for zeta in zetas:
+         # Load the pre-generated spatial network from a pickle file
+         with open(networkpath + f'NetID{i}_avgk{avg_k}_zeta{zeta}_spatialNet.pkl', 'rb') as f:
+             G = pk.load(f)  
+              
+         L_nodes = []    # The list of all nodes in the network
+         for node in G.nodes(): 
+             L_nodes.append(node)  
+         
+         # Define the range of initial activation fractions
+         # Generates a sequence from 0.001 to 0.999 with a step of 0.001
+         source_pro = [x / 1000 for x in range(1, 1000)] 
+         
+         T_active = 6  # Set the activation threshold (T)
+         sim_time = 10  # Number of independent simulation realizations for each parameter set
+         Selected_sets = Select_nodes(N,L_nodes,source_pro,sim_time)   # Pre-select nested sets of seed nodes to ensure consistent comparison across p values
+         max_steps = 5000000   # Define the global cutoff for the maximum number of cascading iterations
+         BPParallel(G,networkpath, i, zeta, avg_k,source_pro,T_active,sim_time,max_steps,Selected_sets,L_nodes)   # Execute the parallel bootstrap percolation simulation
+
+
+
 
     
     
