@@ -227,7 +227,7 @@ for i0 in range(2):
                 
             x =-1/2   
             NOI_theory = 2.54*(Pc_P ** x) 
-            ax.plot(Pc_P, NOI_theory* (Pc_P) ** (0.1) , ls='-', lw=2, color='#310f1b', alpha = 1,label=r'slope=-1/2') 
+            ax.plot(Pc_P, NOI_theory, ls='-', lw=2, color='#310f1b', alpha = 1,label=r'slope=-1/2') 
     
             ax.set_xlabel(r'$(p-p_c)L^{4/3}$', fontsize=32)
             ax.set_ylabel(r'$\frac{\langle \tau \rangle}{L^{2/3}}$', fontsize=32)
