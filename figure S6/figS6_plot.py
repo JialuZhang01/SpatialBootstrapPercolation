@@ -29,7 +29,7 @@ col_labels = sorted(dic_zeta_avgk.keys())
 
 matrix = np.zeros((len(row_labels), len(col_labels)))  
 
-# 填充矩阵值
+
 for i, row in enumerate(row_labels):
     for j, col in enumerate(col_labels):
         if row in dic_zeta_avgk[col]:
