@@ -53,7 +53,7 @@ if __name__ == "__main__":
     plt.ylabel(r'$R_g$', fontsize=24)
     # plt.title('branching process', fontsize=21)
     plt.legend(frameon=False,fontsize=18,ncol=1)
-    plt.savefig('deal_result_rg/fig4c_.pdf')
+    plt.savefig('deal_result_rg/figS4.pdf')
     plt.tight_layout()
     plt.show()
 
