@@ -37,7 +37,7 @@ for i0 in range(3):
         source_pro.append(z_pc[j0]+round(0.001,3))
         source_pro.append(z_pc[j0]+round(0.005,3))
         
-        if i0==0: # 第一行是P∞
+        if i0==0: # P∞
             ax.set_ylim(0, 1)
             ax.set_yticks([0,0.2,0.4,0.6,0.8,1.0])
             c0=0
