@@ -55,7 +55,7 @@ def draw(dic_pc1, dic_pc2, dic_noi):
     noi_x = sorted(dic_noi.keys())
     noi_y = [dic_noi[x] for x in noi_x]
 
-    ax3.plot(noi_x, noi_y, color=color_list[2], linestyle='-', linewidth=2.2,markersize=8, label='3'+'$ζ_c=6$')
+    ax3.plot(noi_x, noi_y, color=color_list[2], linestyle='-', linewidth=2.2,markersize=8, label='$ζ_c=6$')
     ax3.scatter(noi_x, noi_y, facecolors='none', edgecolors=color_list[2], marker='o',s=48)
     ax3.set_ylim(0,2700)
     ax3.set_yticks([0, 2000])  
