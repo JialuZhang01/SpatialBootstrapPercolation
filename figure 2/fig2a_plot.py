@@ -83,7 +83,7 @@ def draw(dic_pc1, dic_pc2, dic_noi):
     path_line = 'deal_result/' 
     mkdirectory(path_line)
    
-    plt.savefig(path_line + fig_2a.pdf')
+    plt.savefig(path_line + 'fig_2a.pdf')
     plt.tight_layout()
     plt.show()
 
