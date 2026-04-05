@@ -43,7 +43,7 @@ def draw_total(dic_zeta_pmax, dic_zeta_psecond, dic_zeta_pNOI, dic_zeta_psecond2
     # Row-wise Axis Sharing:
     axs[0][1].sharey(axs[0][0])
     axs[1][1].sharey(axs[1][0])
-    # axs[2][1].sharey(axs[2][0])
+   
     
     # Redundancy Reduction
     axs[0][1].tick_params(axis='y', labelleft=False) 
@@ -57,27 +57,85 @@ def draw_total(dic_zeta_pmax, dic_zeta_psecond, dic_zeta_pNOI, dic_zeta_psecond2
     i = 0
     for zeta_pfin in dic_zeta_pmax:
         x1, y1 = zip(*dic_zeta_pmax[zeta_pfin].items())
-         for zeta_pfin in dic_zeta_pmax:
-        x1, y1 = zip(*dic_zeta_pmax[zeta_pfin].items())
+        y1=list(y1)
+        
         if zeta_pfin == zetas[0]:
-            axs[0][0].plot(x1, y1, marker='o',linestyle='-',lw=1, color=color_list[i%3-1], markerfacecolor='none',markeredgecolor=color_list[i%3-1], markersize=6,  label=f'ζ={zeta_pfin}')
-           
+            axs[0][0].plot(x1, y1,linestyle='-',lw=2, color=color_list[i%3-1], markerfacecolor='none',markeredgecolor=color_list[i%3-1], label=f'ζ={zeta_pfin}')
+            i += 1
         if zeta_pfin == zetas[1]:
-            axs[0][0].plot(x1[28:], y1[28:], marker='o',linestyle='-',lw=1, color=color_list[i%3-1], markerfacecolor='none',markeredgecolor=color_list[i%3-1], markersize=6,  label=f'ζ={zeta_pfin}')
-           
+            axs[0][0].plot(x1[28:], y1[28:],linestyle='-',lw=2, color=color_list[i%3-1], markerfacecolor='none',markeredgecolor=color_list[i%3-1], label=f'ζ={zeta_pfin}')
+            i += 1
         if zeta_pfin == zetas[2]:
-            axs[0][0].plot(x1[40:], y1[40:], marker='o',linestyle='-',lw=1, color=color_list[i%3-1], markerfacecolor='none',markeredgecolor=color_list[i%3-1], markersize=6,  label=f'ζ={zeta_pfin}')
-            
+            axs[0][0].plot(x1[40:], y1[40:],linestyle='-',lw=2, color=color_list[i%3-1], markerfacecolor='none',markeredgecolor=color_list[i%3-1], label=f'ζ={zeta_pfin}')
+            i += 1
             
         if zeta_pfin == zetas[3]:
-            axs[0][1].plot(x1, y1, marker='o',linestyle='-', lw=1, color=color_list[i%3-1], markerfacecolor='none',markeredgecolor=color_list[i%3-1], markersize=6,  label=f'ζ={zeta_pfin}')
+            normal_x = [x1[0]]
+            normal_y = [y1[0]]
+           
+            for ij in range(1, len(y1)):
+                y_diff = abs(y1[ij] - y1[ij-1])
+                if y_diff > 0.25:
+                    if len(normal_x) > 1:
+                        axs[0][1].plot(normal_x, normal_y, color=color_list[i%3-1], linewidth=2)
+                  
+                    axs[0][1].plot([x1[ij-1], x1[ij]], [y1[ij-1], y1[ij]], 
+                                   color=color_list[i%3-1], linewidth=2, linestyle=':')
+                   
+                    normal_x = [x1[ij]]
+                    normal_y = [y1[ij]]
+                else:
+                    normal_x.append(x1[ij])
+                    normal_y.append(y1[ij])
             
+           
+            if len(normal_x) > 1:
+                axs[0][1].plot(normal_x, normal_y, color=color_list[i%3-1], linewidth=2)
+            i+=1
         if zeta_pfin == zetas[4]:
-            axs[0][1].plot(x1[26:], y1[26:], marker='o',linestyle='-', lw=1, color=color_list[i%3-1], markerfacecolor='none',markeredgecolor=color_list[i%3-1], markersize=6,  label=f'ζ={zeta_pfin}')
+            normal_x = [x1[0]]
+            normal_y = [y1[0]]
+            
+            for ij in range(1, len(y1)):
+                y_diff = abs(y1[ij] - y1[ij-1])
+                if y_diff > 0.25:
+                    if len(normal_x) > 1:
+                        axs[0][1].plot(normal_x, normal_y, color=color_list[i%3-1], linewidth=2)
+                    axs[0][1].plot([x1[ij-1], x1[ij]], [y1[ij-1], y1[ij]], 
+                                   color=color_list[i%3-1], linewidth=2, linestyle=':')
+                  
+                    normal_x = [x1[ij]]
+                    normal_y = [y1[ij]]
+                else:
+                    normal_x.append(x1[ij])
+                    normal_y.append(y1[ij])
+            
+            if len(normal_x) > 1:
+                axs[0][1].plot(normal_x, normal_y, color=color_list[i%3-1], linewidth=2)
+            i+=1
             
         if zeta_pfin == zetas[5]:
-            axs[0][1].plot(x1[40:], y1[40:], marker='o',linestyle='-', lw=1, color=color_list[i%3-1], markerfacecolor='none',markeredgecolor=color_list[i%3-1], markersize=6,  label=f'ζ={zeta_pfin}')
-        i += 1
+            normal_x = [x1[0]]
+            normal_y = [y1[0]]
+           
+            for ij in range(1, len(y1)):
+                y_diff = abs(y1[ij] - y1[ij-1])
+                if y_diff > 0.25:
+                    if len(normal_x) > 1:
+                        axs[0][1].plot(normal_x, normal_y, color=color_list[i%3-1], linewidth=2)
+                   
+                    axs[0][1].plot([x1[ij-1], x1[ij]], [y1[ij-1], y1[ij]], 
+                                   color=color_list[i%3-1], linewidth=2, linestyle=':')
+                   
+                    normal_x = [x1[ij]]
+                    normal_y = [y1[ij]]
+                else:
+                    normal_x.append(x1[ij])
+                    normal_y.append(y1[ij])
+           
+            if len(normal_x) > 1:
+                axs[0][1].plot(normal_x, normal_y, color=color_list[i%3-1], linewidth=2)
+            i+=1
     
     # Second line: Plot S_gc2(p)
     i = 0
@@ -133,7 +191,7 @@ def draw_total(dic_zeta_pmax, dic_zeta_psecond, dic_zeta_pNOI, dic_zeta_psecond2
        
     
 
-     # Third row: Plot S_gc2^*(p) (with the y-axis on the left)
+    # Third row: Plot S_gc2^*(p) (with the y-axis on the left)
     i = 0
     for zeta_pN in dic_zeta_psecond2:
         x4, y4 = zip(*dic_zeta_psecond2[zeta_pN].items())
@@ -189,7 +247,7 @@ def draw_total(dic_zeta_pmax, dic_zeta_psecond, dic_zeta_pNOI, dic_zeta_psecond2
     return 
 
 def extract_info(z, deal_resultfile, source_pro1, source_pro2):
-     """
+    """
     Parses a consolidated result file and maps zeta-p pairs to their respective metrics.
     
     The function uses an adaptive filtering logic: it applies different p-value 
@@ -204,6 +262,7 @@ def extract_info(z, deal_resultfile, source_pro1, source_pro2):
     Returns:
         dict: A structured dictionary {zeta: {p: value}}.
     """
+    
     f = open(deal_resultfile, 'r', encoding='utf-8-sig')
     dic_zeta_p = {}  
     for zeta in z:
@@ -309,11 +368,7 @@ def extract_info2(z, resultfile_3, resultfile_4,resultfile_5,source_pro):
     f.close()
     return dic_zeta_p
         
-        
-        
-    
-    
-    
+
     
     
 if __name__ == "__main__":
