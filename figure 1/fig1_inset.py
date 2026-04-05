@@ -28,7 +28,7 @@ if __name__ == "__main__":
     avg_k = 10   # Average Degree
     i = 0
     T_active = 6  # The activation threshold (T)
-    sim_time =10
+    sim_time =2
     
     dic_sim_p= {}  # sim:{p:pinf} 
     for i in range(sim_time):
@@ -106,9 +106,9 @@ if __name__ == "__main__":
     plt.xlabel('$p_c - p$',fontsize=35) 
     
     
-    path_line = 'deal_result/' 
+    path_line = 'deal_result/FIG1/' 
     mkdirectory(path_line)
-    plt.savefig(path_line+'zeta='+str(zetas[0])+'_T='+str(T_active)+'_'+'avgk='+str(avg_k)+'_标度_fig1b-inset.pdf')
+    plt.savefig(path_line+'zeta='+str(zetas[0])+'_T='+str(T_active)+'_'+'avgk='+str(avg_k)+'_fig1b-inset.pdf')
     plt.show()
     
     
