@@ -26,8 +26,8 @@ def mkdirectory(path):
 if __name__ == "__main__":
     L_side = 1000   # Lattice length
     networkpath = 'network/'   # the network's path.  
-    zeta = 20 
-    source_p = 0.236  # pc2
+    zeta = 12 
+    source_p = 0.229  # pc2
     avg_k = 10   # Average degree
     i = 0
     T_active = 6  # The activation threshold (T)
