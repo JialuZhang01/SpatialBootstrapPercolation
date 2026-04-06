@@ -227,7 +227,7 @@ def points_in_circle(l_nodes, radius_list, l_size,sim0):
 
 
 def Select_nodes(n,l_nodes,source_pro,sim_t):
-     """
+    """
     Generates nested sets of initial seed nodes for multiple simulation realizations.
     
     This function ensures that for increasing activation fractions (p), the 
