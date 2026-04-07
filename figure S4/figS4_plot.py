@@ -4,15 +4,10 @@ Created on Wed Oct 15 15:54:19 2025
 
 @author: JialuZhang01
 """
-import os 
-import numpy as np
+
 import math
-import networkx as nx
-import pickle as pk
-import math
-import ast
-import random
 import matplotlib.pyplot as plt
+
 
 if __name__ == "__main__": 
     L = 1000   # Lattice length
@@ -51,7 +46,6 @@ if __name__ == "__main__":
     plt.yticks(fontsize=17)
     plt.xlabel(r't', fontsize=24)
     plt.ylabel(r'$R_g$', fontsize=24)
-    # plt.title('branching process', fontsize=21)
     plt.legend(frameon=False,fontsize=18,ncol=1)
     plt.savefig('deal_result_rg/figS4.pdf')
     plt.tight_layout()
@@ -63,34 +57,6 @@ if __name__ == "__main__":
     
   
     
-   
-    
-  
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         
