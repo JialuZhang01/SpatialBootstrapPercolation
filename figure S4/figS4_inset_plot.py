@@ -28,7 +28,7 @@ if __name__ == "__main__":
     v = []
     # plt.figure(figsize=(18, 5)) 
     for z in zeta_l:
-        f = open('deal_result_rg变化/T=6/zeta='+str(z)+'/t_radius.txt','r',encoding='utf-8-sig')
+        f = open('deal_result_rg/T=6/zeta='+str(z)+'/t_radius.txt','r',encoding='utf-8-sig')
         t = []
         r = []
         
@@ -65,55 +65,43 @@ if __name__ == "__main__":
                 
 
     
-    ax = plt.gca()  
+    c_list  =['#5B423A','#1072BD','#EDB021','#D7592C','#7F318D']
+    
+    # 1.  Perform linear fitting on the scatter points
+    popt_linear, _ = curve_fit(linear_func, zeta_l, v)
+    k_fit, b_fit = popt_linear  # Obtain the fitted slope and intercept
+    
+    #  Generate x-coordinates for the fitting line 
+    zeta_fit = np.linspace(min(zeta_l), max(zeta_l), 100)
+    v_fit = linear_func(zeta_fit, k_fit, b_fit)
+    
+    # 2. Plot the figure
+    plt.figure(figsize=(6.4, 4.8))
+    ax = plt.gca()  # gca = get current axes
+    # Set the visibility of the four spines:
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    plt.plot(zeta_l, v, marker='o',ls='-',lw=1,color=c_list[0],markersize=12,   
-    markeredgecolor=c_list[0],  
-    markerfacecolor='none')       
-    plt.plot(zeta_l, v,color=c_list[0]) 
+    
+    # Plot the original scatter points
+    plt.plot(zeta_l, v, marker='o', ls='', color=c_list[0], markersize=16,
+             markeredgecolor=c_list[0], markerfacecolor='none')
+    
+    #  Plot the linear fitting line
+    plt.plot(zeta_fit, v_fit, ls='-', lw=1.2, color=c_list[0], 
+             label=f'$v = {k_fit:.3f}\zeta{b_fit:.3f}$')
+    
     plt.xticks(zeta_l, fontsize=20)  
     plt.yticks(fontsize=20)
-    plt.xlabel(r'ζ', fontsize=26)
+    plt.xlabel(r'$\zeta$', fontsize=26)
     plt.ylabel(r'$v$', fontsize=26)
-    plt.legend(frameon=False,fontsize=16,ncol=1)
-    plt.savefig('deal_result_rg/figS4_inset.pdf')
+    plt.legend(frameon=False, fontsize=22.8, ncol=1)
     plt.tight_layout()
+    plt.savefig('deal_result_rg/figS4_inset.pdf')
     plt.show()
-
         
     
     
     
-  
-    
-   
-    
-  
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
