@@ -23,7 +23,7 @@ if __name__ == "__main__":
     )
     
     zetas=[3,12,1000]  # The list of zeta values
-    z_pc = [0.25,0.229,0.243]   # Corresponding pc2
+    z_pc = [0.254,0.231,0.243]   # Corresponding pc2
     text_l =['a','b','c','d','e','f','g','h','i']
     avg_k = 10   #  Average Degree
     T_active = 6  # The activation threshold (T)
@@ -43,7 +43,7 @@ if __name__ == "__main__":
             source_pro.append(z_pc[j0])
             source_pro.append(z_pc[j0]+round(0.0005,4))
             source_pro.append(z_pc[j0]+round(0.001,3))
-            source_pro.append(z_pc[j0]+round(0.005,3))
+            source_pro.append(round(z_pc[j0]+round(0.005,3),3))
             
             if i0==0: # P∞
                 ax.set_ylim(0, 1)
@@ -51,20 +51,17 @@ if __name__ == "__main__":
                 c0=0
                 f1 = open('3_12_1000_cascade_dynamic/'+'T='+str(T_active) +'_avgk='+str(avg_k) +'_t_S(gc)_zeta'+str(zetas[j0])+'.txt','r', encoding='utf-8-sig')
                 for line_f1 in f1:
+                    if zetas[j0] == 1000:
+                        print(source_pro)
                     x_average = []
                     y_average = []
                     line_f1 = line_f1.strip().split('\t')
                     if float(line_f1[0][1:]) in source_pro:
-                        if float(line_f1[0][1:]) == 0.251:
-                            for i in line_f1[1:-5]:
-                                i = i.strip().split(',')
-                                x_average.append(int(i[0][1:]))
-                                y_average.append(float(i[1]))
-                        else:
-                            for i in line_f1[1:]:
-                                i = i.strip().split(',')
-                                x_average.append(int(i[0][1:]))
-                                y_average.append(float(i[1]))
+                    
+                        for i in line_f1[1:]:
+                            i = i.strip().split(',')
+                            x_average.append(int(i[0][1:]))
+                            y_average.append(float(i[1]))
                         c0+=1
                         ax.plot(x_average, y_average,ls='-', lw=1, color=c_draw[c0-1], alpha = 1,label=list_label[c0-1])
                         ax.scatter(x_average, y_average, facecolors='none',edgecolors=c_draw[c0-1],alpha=0.5) 
@@ -76,15 +73,15 @@ if __name__ == "__main__":
                     ax.set_ylabel('$P_\infty(t)$',fontsize=13)
             
             if i0==1: # S_t
-                ax.set_ylim(0.0000066,0.28)         
+                ax.set_ylim(0.0000028,0.28)         
                 c0=0
-                f1 = open('3_12_1000_cascade_dynamic/'+'T='+str(T_active) +'_avgk='+str(avg_k) +'_t_S(gc)_zeta'+str(zetas[j0])+'.txt','r', encoding='utf-8-sig')
+                f1 = open('3_12_1000_cascade_dynamic/'+'T='+str(T_active) +'_avgk='+str(avg_k) +'_t_active_zeta'+str(zetas[j0])+'.txt','r', encoding='utf-8-sig')
                 for line_f1 in f1:
                     x_average = []
                     y_average = []
                     line_f1 = line_f1.strip().split('\t')
                     if float(line_f1[0][1:]) in source_pro:
-                        if float(line_f1[0][1:]) == 0.251:
+                        if float(line_f1[0][1:]) == 0.2545:
                             for i in line_f1[1:-5]:
                                 i = i.strip().split(',')
                                 x_average.append(int(i[0][1:]))
@@ -107,10 +104,10 @@ if __name__ == "__main__":
                     ax.set_ylabel('$S_t$',fontsize=13)
     
             if i0==2: # η_t
-                ax.set_ylim(0.15,1.75)
+                ax.set_ylim(0.12,1.85)
                 ax.set_yticks(np.arange(0.2, 1.76, 0.4))
                 c0=0
-                f1 = open('3_12_1000_cascade_dynamic/'+'T='+str(T_active) +'_avgk='+str(avg_k) +'_t_S(gc)_zeta'+str(zetas[j0])+'.txt','r', encoding='utf-8-sig')
+                f1 = open('3_12_1000_cascade_dynamic/'+'T='+str(T_active) +'_avgk='+str(avg_k) +'_t_active_zeta'+str(zetas[j0])+'.txt','r', encoding='utf-8-sig')
                 for line_f1 in f1:
                     x_average = []
                     y_average = []
@@ -138,18 +135,18 @@ if __name__ == "__main__":
                 ax.set_xlabel('t',fontsize=13)
                 if j0 == 0:
                     ax.set_ylabel('$η_t$',fontsize=13)
-                    ax.set_xlim(-12, 261)  
-                    ax.set_xticks(range(0, 261,100)) 
+                    ax.set_xlim(-12, 246)  
+                    ax.set_xticks(range(0, 251,100)) 
                     
                     
                 if j0 == 2:
-                    ax.set_xlim(-5, 100) 
-                    ax.set_xticks(range(0, 101,50)) 
+                    ax.set_xlim(-5, 111) 
+                    ax.set_xticks(range(0, 111,50)) 
                    
                 
                 if j0 == 1:
-                    ax.set_xlim(-12, 355)  
-                    ax.set_xticks(range(0, 355,100))  
+                    ax.set_xlim(-12, 341)  
+                    ax.set_xticks(range(0, 341,100))  
             
             ax.text(0.05, 0.98, text_l[i0*3+j0], 
                   transform=ax.transAxes, 
