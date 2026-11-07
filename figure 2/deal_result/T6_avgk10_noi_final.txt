@@ -1,0 +1,17 @@
+zeta3	295.7
+zeta4	557.5
+zeta5	1259.8
+zeta6	2293.1
+zeta7	1456.0
+zeta8	791.9
+zeta9	580.4
+zeta10	443.6
+zeta12	328.5
+zeta15	240.0
+zeta20	190.6
+zeta30	143.9
+zeta40	137.5
+zeta50	128.4
+zeta100	127.0
+zeta500	172.5
+zeta1000	154.1
