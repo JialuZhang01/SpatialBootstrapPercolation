@@ -15,7 +15,30 @@ def mkdirectory(path):
     """
     if not os.path.exists(path):
         os.makedirs(path, exist_ok=True)
-
+        
+        
+def read_info(avg_k,T_active):
+    dic_zeta_pc1={}
+    f_pc1=open(f'deal_result/T{T_active}_avgk{avg_k}_pc1_final.txt','r',encoding='utf-8-sig')
+    for line in f_pc1:
+        line=line.strip().split('\t')
+        dic_zeta_pc1[int(line[0][4:])]=float(line[1])
+    f_pc1.close()
+    dic_zeta_pc2={}
+    f_pc2=open(f'deal_result/T{T_active}_avgk{avg_k}_pc2_final.txt','r',encoding='utf-8-sig')
+    for line in f_pc2:
+        line=line.strip().split('\t')
+        dic_zeta_pc2[int(line[0][4:])]=float(line[1])
+    f_pc2.close()
+    dic_zeta_noi={}
+    f_noi=open(f'deal_result/T{T_active}_avgk{avg_k}_noi_final.txt','r',encoding='utf-8-sig')
+    for line in f_noi:
+        line=line.strip().split('\t')
+        dic_zeta_noi[int(line[0][4:])]=float(line[1])
+    f_noi.close()
+        
+    
+    return dic_zeta_pc1,dic_zeta_pc2,dic_zeta_noi
 
 def draw(dic_pc1, dic_pc2, dic_noi):
     """
@@ -80,174 +103,17 @@ def draw(dic_pc1, dic_pc2, dic_noi):
     
 
     plt.subplots_adjust(hspace=0)
-    path_line = 'deal_result/' 
+    path_line = 'FIG2/' 
     mkdirectory(path_line)
    
     plt.savefig(path_line + 'fig_2a.pdf')
     plt.tight_layout()
     plt.show()
 
-def identify_pc1(i, zetas, avg_k, T_active, sim_time):  
-    """
-    Identifies the first critical threshold (p_c1) based on the peak of the 
-    second largest connected component (S_gc2).
-
-    The critical point is determined by finding the initial activation fraction 'p' 
-     that maximizes the susceptibility-like indicator (size of the second largest cluster)
-    across multiple simulation realizations.
-
-    Parameters:
-        net_id (int): Network identifier.
-        zetas (list): List of spatial interaction ranges.
-        avg_k (int): Average degree of the network.
-        T_active (int): Activation threshold.
-        sim_time (int): Number of independent simulation realizations.
-
-    Returns:
-        raw_pc1_dict, mean_pc1_dict
-               - raw_pc1_dict: {zeta: [pc1_run1, pc1_run2, ...]}
-               - mean_pc1_dict: {zeta: ensemble_average_pc1}
-    """
-    dic_zeta_sim = {}  
-    
-    for zeta in zetas:
-        dic_zeta_sim[zeta] = [{} for s in range(sim_time)]
-        
-        f_gc2 = open('deal_result/pc1/' + 'T=' + str(T_active) + '_avgk=' + str(avg_k) + '_second_connexted_' + str(zeta) + '.txt', 'r', encoding='utf-8-sig')
-        for line in f_gc2:
-            line = line.strip().split('\t')
-            for sim_t in range(sim_time):
-                dic_zeta_sim[int(line[0][4:])][sim_t][float(line[1][1:])] = float(line[2 + sim_t])
-        f_gc2.close()
-        
-    dic_zeta_pc1 = {}   
-    
-    for zeta in zetas:
-        dic_zeta_pc1[zeta] = []
-    for z in dic_zeta_sim:
-        for i in dic_zeta_sim[z]:
-            max_p = max(i, key=i.get)
-            dic_zeta_pc1[z].append(max_p)
-            
-    d_zeta_pc1 = {}
-    for zeta in zetas:
-        d_zeta_pc1[zeta] = 0
-    for x in dic_zeta_pc1:
-        ave = sum(dic_zeta_pc1[x]) / len(dic_zeta_pc1[x])
-        d_zeta_pc1[x] = round(ave, 4)      
-            
-    return dic_zeta_pc1, d_zeta_pc1
 
 
-def identify_pc2(i, zetas, avg_k, T_active, sim_time): 
-    """
-    Identifies the second critical threshold (p_c2) based on the peak of the 
-    S_gc2^* or NOI.
 
-    
-    Parameters:
-        net_id (int): Network identifier.
-        zetas (list): List of spatial interaction ranges.
-        avg_k (int): Average degree of the network.
-        T_active (int): Activation threshold.
-        sim_time (int): Number of independent simulation realizations.
 
-    Returns:
-        raw_pc2_dict, mean_pc2_dict
-           
-    """
-    dic_zeta_sim = {}  
-    for zeta in zetas:
-        dic_zeta_sim[zeta] = [{} for s in range(sim_time)]
-        
-        if (zeta == 3) or (zeta == 4) or (zeta == 5):
-            f_NOI = open('deal_result/pc2/' + 'T=' + str(T_active) + '_avgk=' + str(avg_k) + '_inactive_gc2_' + str(zeta) + '.txt', 'r', encoding='utf-8-sig')
-            for line in f_NOI:
-                line = line.strip().split('\t')
-                for sim_t in range(sim_time):
-                    dic_zeta_sim[int(line[0][4:])][sim_t][float(line[1][1:])] = int(line[2 + sim_t])
-            f_NOI.close()
-        else:
-            f_gc = open('deal_result/pc2/' + 'T=' + str(T_active) + '_avgk=' + str(avg_k) + '_max_connexted' + str(zeta) + '.txt', 'r', encoding='utf-8-sig')
-            for line in f_gc:
-                line = line.strip().split('\t')
-                for sim_t in range(sim_time):
-                    dic_zeta_sim[int(line[0][4:])][sim_t][float(line[1][1:])] = float(line[2 + sim_t])
-            f_gc.close()
-           
-    dic_zeta_pc2 = {}
-    
-    for zeta in zetas:
-        dic_zeta_pc2[zeta] = []
-    for z in dic_zeta_sim:
-        if (z == 3) or (z == 4):
-            for i in dic_zeta_sim[z]:
-                max_p = max(i, key=i.get)
-                dic_zeta_pc2[z].append(max_p)
-        else:
-            for i in dic_zeta_sim[z]:
-                sorted_keys = sorted(i.keys())
-                for j in range(1, len(sorted_keys)):
-                    prev_key = sorted_keys[j-1]
-                    current_key = sorted_keys[j]
-                    diff = i[current_key] - i[prev_key]
-                    if diff > 0.2:
-                        dic_zeta_pc2[z].append(current_key)
-                        break
-     
-    d_zeta_pc2 = {}
-    for zeta in zetas:
-        d_zeta_pc2[zeta] = 0
-    for x in dic_zeta_pc2:
-        ave = sum(dic_zeta_pc2[x]) / len(dic_zeta_pc2[x])
-        d_zeta_pc2[x] = round(ave, 4)    
-            
-    return dic_zeta_pc2, d_zeta_pc2
-
-def identify_noi(i, zetas, avg_k, T_active, sim_time): 
-    """
-    Identifies the peak activation intensity (NOI) across different spatial ranges.
-
-    Parameters:
-        net_id (int): Network identifier.
-        zetas (list): List of spatial interaction ranges.
-        avg_k (float): Average degree.
-        T_active (int): Activation threshold.
-        sim_time (int): Number of independent realizations.
-
-    Returns:
-        raw_noi_dict, mean_peak_noi_dict
-           
-    """
-    
-    dic_zeta_sim = {}  
-    
-    for zeta in zetas:
-        dic_zeta_sim[zeta] = [{} for s in range(sim_time)]
-        
-        f_NOI = open('deal_result/pc2/' + 'T=' + str(T_active) + '_avgk=' + str(avg_k) + '_NOI_' + str(zeta) + '.txt', 'r', encoding='utf-8-sig')
-        for line in f_NOI:
-            line = line.strip().split('\t')
-            for sim_t in range(sim_time):
-                dic_zeta_sim[int(line[0][4:])][sim_t][float(line[1][1:])] = int(line[2 + sim_t])
-        f_NOI.close()
-           
-    dic_zeta_noi = {}    
-    for zeta in zetas:
-        dic_zeta_noi[zeta] = []
-    for z in dic_zeta_sim:
-        for i in dic_zeta_sim[z]:
-            max_n = max(i.values())
-            dic_zeta_noi[z].append(max_n)
-   
-    d_zeta_noi = {}
-    for zeta in zetas:
-        d_zeta_noi[zeta] = 0
-    for x in dic_zeta_noi:
-        ave = sum(dic_zeta_noi[x]) / len(dic_zeta_noi[x])
-        d_zeta_noi[x] = round(ave, 4)    
-            
-    return dic_zeta_noi, d_zeta_noi
 
 
 if __name__ == "__main__":
@@ -256,10 +122,8 @@ if __name__ == "__main__":
     avg_k = 10   #  Average Degree
     i = 0
     T_active = 6  # The activation threshold (T)
-    sim_time = 10
+    
    
-    Dic_zeta_pc1, D_zeta_pc1 = identify_pc1(i, zetas, avg_k, T_active, sim_time)
-    Dic_zeta_pc2, D_zeta_pc2 = identify_pc2(i, zetas, avg_k, T_active, sim_time)
-    Dic_zeta_noi, D_zeta_noi = identify_noi(i, zetas, avg_k, T_active, sim_time)
+    D_zeta_pc1,D_zeta_pc2,D_zeta_noi =read_info(avg_k,T_active)
     draw(D_zeta_pc1, D_zeta_pc2, D_zeta_noi)
     
