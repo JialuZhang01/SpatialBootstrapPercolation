@@ -1,2 +1,4 @@
 # SpatialBootstrapPercolation
 SpatialBootstrapPercolation is a Python project for generating spatial networks and performing bootstrap percolation simulations to analyze percolation behavior. It includes functions for generating spatial networks with various parameters, performing bootstrap percolation simulations, and plot the simulation results.
+The foundational scripts for generating spatial network models and executing the percolation dynamics are organized within the 'figure 1' directory. Please note that because the full raw simulation datasets are too large to host on GitHub, we provide representative data subsets for plotting purposes.
+All output datasets can be fully regenerated from scratch by executing the percolation and network scripts provided and network parameters, dynamical control variables, and the number of independent realizations are explicitly documented in the main manuscript.
